@@ -1,7 +1,9 @@
-// declare variables
+// declare global variables
 const formEl = document.querySelector("#task-form");
-const tasksToDoEl = document.querySelector("#tasks-to-do");
 const pageContentEl = document.querySelector("#page-content");
+const tasksToDoEl = document.querySelector("#tasks-to-do");
+const tasksInProgressEl = document.querySelector("#tasks-in-progress");
+const tasksCompletedEl = document.querySelector("#tasks-completed");
 let taskIdCounter = 0;
 
 // create DOM hanler functions
@@ -35,7 +37,7 @@ const taskFormHandler = function() {
     formEl.reset();
 };
 
-const taskButtonHandler = function (event) {
+const taskButtonHandler = function(event) {
     if (event.target.matches(".delete-btn")) {
         // get the element's task id
         var taskId = event.target.getAttribute("data-task-id");
@@ -44,6 +46,23 @@ const taskButtonHandler = function (event) {
         var taskId = event.target.getAttribute("data-task-id");
         editTask(taskId);
     }
+};
+
+const taskStatusChangeHandler = function(event) {
+    // get the task item's id
+    let taskId = event.target.getAttribute("data-task-id");
+    // get the currently selected option's value and convert to lowercase
+    let statusValue = event.target.value.toLowerCase();
+    // find the parent task item element based on the id
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if (statusValue === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+    } else if (statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    } else if (statusValue === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+    };
 };
 
 // functions for creating html elements
@@ -154,3 +173,4 @@ const editTask = function(taskId) {
 
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
