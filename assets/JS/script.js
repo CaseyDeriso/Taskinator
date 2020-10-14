@@ -14,14 +14,22 @@ const taskFormHandler = function() {
         alert("You need to fill out the task form!")
         return false
     }
-    // package up data as an object
-    let taskDataObj = {
+    // determine if form is in edit mode
+    let isEdit = formEl.hasAttribute("data-task-id");
+    // perform initiation or edit of task element
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    } else {
+        // package up data as an object
+        let taskDataObj = {
         name: taskNameInput,
         type: taskTypeInput
+        };
+        // send it as an argument to createTaskEl
+        createTaskEl(taskDataObj);
     };
 
-    // send it as an argument to createTaskEl
-    createTaskEl(taskDataObj);
 
     // reset form element
     formEl.reset();
@@ -110,6 +118,20 @@ const createTaskActions = function(taskId) {
     return actionContainterEl;
 };
 
+const completeEditTask = function(taskName, taskType, taskId) {
+    // find the matching task list item
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']")
+
+    // set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    alert("Task Updated!");
+
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task"
+};
+
 // functions for deleting and editing HTML elements
 const deleteTask = function(taskId) {
     // get the list item element reference
@@ -127,7 +149,7 @@ const editTask = function(taskId) {
     document.querySelector("select[name='task-type']").value = taskType; 
     // change add item button to edit mode
     document.querySelector('#save-task').textContent = "Save Task";
-    formEl.setAttribute("data-task-id", taskId)
+    formEl.setAttribute("data-task-id", taskId);
 };
 
 formEl.addEventListener("submit", taskFormHandler);
