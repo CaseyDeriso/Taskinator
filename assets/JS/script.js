@@ -1,7 +1,10 @@
+// declare variables
 const formEl = document.querySelector("#task-form");
 const tasksToDoEl = document.querySelector("#tasks-to-do");
+const pageContentEl = document.querySelector("#page-content");
 let taskIdCounter = 0;
 
+// create DOM hanler functions
 const taskFormHandler = function() {
     event.preventDefault();
     let taskNameInput = document.querySelector("input[name='task-name']").value;
@@ -24,12 +27,21 @@ const taskFormHandler = function() {
     formEl.reset();
 };
 
+const taskButtonHandler = function (event) {
+    if (event.target.matches(".delete-btn")) {
+        // get the element's task id
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    };
+};
+
+// functions for creating html elements
 const createTaskEl = function(taskDataObj) {
     // create list item
     let listItemEl = document.createElement("li");
     listItemEl.className = "task-item";
     // add task id as a custom atribute
-    listItemEl.setAttribute("task-task-id", taskIdCounter)
+    listItemEl.setAttribute("data-task-id", taskIdCounter)
     // create div to hold task info and add to the list item
     let taskInfoEl = document.createElement("div");
     // give it a class name
@@ -50,6 +62,8 @@ const createTaskEl = function(taskDataObj) {
     tasksToDoEl.appendChild(listItemEl);
     taskIdCounter++;
 };
+
+
 
 const createTaskActions = function(taskId) {
     let actionContainterEl = document.createElement("div");
@@ -93,4 +107,11 @@ const createTaskActions = function(taskId) {
     return actionContainterEl;
 };
 
+// functions for deleting HTML elements
+const deleteTask = function(taskId) {
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    taskSelected.remove();
+};
+
 formEl.addEventListener("submit", taskFormHandler);
+pageContentEl.addEventListener("click", taskButtonHandler);
